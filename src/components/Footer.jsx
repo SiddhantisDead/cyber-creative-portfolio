@@ -1,4 +1,9 @@
-const LINKS = ["GitHub", "LinkedIn", "Email", "Resume"];
+const LINKS = [
+  { label: "GitHub", href: "https://github.com/SiddhantisDead" },
+  { label: "LinkedIn", href: "#" },
+  { label: "Email", href: "#" },
+  { label: "Resume", href: "#" },
+];
 
 export function Footer() {
   return (
@@ -11,10 +16,12 @@ export function Footer() {
           © 2024 ACTIVE_DEFENSE. ALL RIGHTS RESERVED.
         </div>
         <div className="flex gap-6 font-mono text-sm">
-          {LINKS.map((label) => (
+          {LINKS.map(({ label, href }) => (
             <a
               key={label}
-              href="#"
+              href={href}
+              target={href.startsWith("http") ? "_blank" : undefined}
+              rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
               className="text-on-surface-variant hover:text-primary opacity-80 hover:opacity-100 transition-colors transition-opacity"
             >
               {label}
