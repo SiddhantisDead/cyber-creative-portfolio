@@ -5,7 +5,7 @@ export function Projects() {
   return (
     <section
       id="projects"
-      className="py-24 px-5 md:px-20 max-w-[1200px] mx-auto border-t border-primary/10"
+      className="py-24 px-5 md:px-20 max-w-[1200px] mx-auto border-t border-primary/10 scroll-mt-24"
     >
       <div className="mb-12 flex justify-between items-end">
         <div>

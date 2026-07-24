@@ -42,24 +42,4 @@
     box-shadow: 0 0 12px rgba(0, 255, 156, 0.4);
     border-color: rgba(0, 255, 156, 0.8);
   }
-
-  .terminal-cursor {
-    display: inline-block;
-    width: 8px;
-    height: 16px;
-    background-color: var(--color-primary);
-    animation: blink 1s step-end infinite;
-    vertical-align: middle;
-    margin-left: 4px;
-  }
-}
-
-@keyframes blink {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0;
-  }
 }

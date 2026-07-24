@@ -31,7 +31,7 @@ export function Contact() {
   return (
     <section
       id="contact"
-      className="py-24 px-5 md:px-20 max-w-[1200px] mx-auto border-t border-primary/10"
+      className="py-24 px-5 md:px-20 max-w-[1200px] mx-auto border-t border-primary/10 scroll-mt-24"
     >
       <div className="mb-12">
         <h2 className="font-sans text-3xl text-on-surface mb-2">
