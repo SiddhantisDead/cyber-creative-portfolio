@@ -41,7 +41,7 @@ function roundedRect(ctx, x, y, w, h, r) {
 }
 
 // deterministic PRNG so the composition is stable across reloads
-function buildFragments() {
+function buildFragments(count) {
   let seed = 20260724 >>> 0;
   const rng = () => {
     seed = (seed * 1664525 + 1013904223) >>> 0;
@@ -50,10 +50,10 @@ function buildFragments() {
   const rand = (a, b) => a + (b - a) * rng();
   const pick = (arr) => arr[Math.floor(rng() * arr.length)];
   const TAU = Math.PI * 2;
-  const types = ["dot", "dot", "dot", "ring", "pill", "line", "chip", "card", "pill", "chip", "ring", "dot"];
+  const types = ["dot", "dot", "dot", "ring", "pill", "line", "chip", "pill", "ring", "dot"];
   const roles = ["acc", "accL", "accL", "light", "acc", "deep", "accL", "light"];
   const out = [];
-  for (let i = 0; i < 22; i++) {
+  for (let i = 0; i < count; i++) {
     out.push({
       rf: rand(0.18, 0.99),
       a0: rand(0, TAU),
@@ -71,16 +71,13 @@ function buildFragments() {
       wf: rand(1.6, 3.4),
     });
   }
-  // a couple of pinned larger "UI card" fragments for a showcase nod
+  // one pinned larger "UI card" fragment for a showcase nod
   out.push({ rf: 0.62, a0: 0.5, turns: 1, sBase: 13, bobAmp: 0.03, bobFreq: 1, bobPh: 0, twFreq: 1, twPh: 0.6, spin: 0, spinPh: 0, type: "card", role: "deep", wf: 2.6 });
-  out.push({ rf: 0.72, a0: 3.7, turns: -1, sBase: 11, bobAmp: 0.035, bobFreq: 2, bobPh: 1.2, twFreq: 1, twPh: 2.1, spin: 0, spinPh: 0.4, type: "card", role: "deep", wf: 2.9 });
   return out;
 }
 
 export function OrbitCanvas({ className }) {
   const canvasRef = useRef(null);
-  const fragsRef = useRef(null);
-  if (!fragsRef.current) fragsRef.current = buildFragments();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -90,9 +87,28 @@ export function OrbitCanvas({ className }) {
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    // scale back detail/resolution on small screens or weaker devices
+    const lite =
+      window.matchMedia("(max-width: 640px)").matches ||
+      (navigator.hardwareConcurrency || 4) <= 4;
+    const dpr = Math.min(window.devicePixelRatio || 1, lite ? 1 : 1.5);
+    const targetFrameMs = 1000 / (lite ? 24 : 30);
+    const frags = buildFragments(lite ? 10 : 20);
+
     let w = 0;
     let h = 0;
+    let bgGradient = null;
+
+    const buildBgGradient = () => {
+      const cx = w / 2;
+      const cy = h / 2;
+      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w, h) * 0.72);
+      g.addColorStop(0, "#0e1610");
+      g.addColorStop(0.55, "#0b1210");
+      g.addColorStop(1, "#0a0e14");
+      return g;
+    };
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
@@ -101,6 +117,7 @@ export function OrbitCanvas({ className }) {
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      bgGradient = buildBgGradient();
     };
 
     const ACC = hexToRgb(ACCENT_HEX);
@@ -121,11 +138,7 @@ export function OrbitCanvas({ className }) {
       const pulse = 0.5 + 0.5 * Math.sin(TAU * 2 * p);
 
       ctx.globalCompositeOperation = "source-over";
-      const bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.max(w, h) * 0.72);
-      bg.addColorStop(0, "#0e1610");
-      bg.addColorStop(0.55, "#0b1210");
-      bg.addColorStop(1, "#0a0e14");
-      ctx.fillStyle = bg;
+      ctx.fillStyle = bgGradient;
       ctx.fillRect(0, 0, w, h);
 
       ctx.globalCompositeOperation = "lighter";
@@ -141,8 +154,12 @@ export function OrbitCanvas({ className }) {
         const rot = TAU * rg.turns * p;
         ctx.lineWidth = rg.w;
         ctx.strokeStyle = rgba(ACC_L, rg.a * (0.7 + 0.3 * pulse));
-        ctx.shadowBlur = rg.glow ? 16 : 0;
-        ctx.shadowColor = rgba(ACC, 0.8);
+        if (rg.glow && !lite) {
+          ctx.shadowBlur = 16;
+          ctx.shadowColor = rgba(ACC, 0.8);
+        } else {
+          ctx.shadowBlur = 0;
+        }
         for (const [start, len] of rg.segs) {
           ctx.beginPath();
           ctx.arc(cx, cy, rad, rot + start, rot + start + len);
@@ -152,7 +169,7 @@ export function OrbitCanvas({ className }) {
       ctx.shadowBlur = 0;
 
       const sScale = R / 300;
-      for (const f of fragsRef.current) {
+      for (const f of frags) {
         const ang = f.a0 + TAU * f.turns * p;
         const rad =
           R * f.rf + f.bobAmp * MOTION_INTENSITY * R * Math.sin(TAU * f.bobFreq * p + f.bobPh);
@@ -168,33 +185,30 @@ export function OrbitCanvas({ className }) {
         ctx.translate(x, y);
         ctx.rotate(spin);
         ctx.globalCompositeOperation = "lighter";
-        ctx.shadowColor = rgba(col, 0.9);
 
+        // per-fragment glow is skipped (only a handful of ring/core draws use
+        // shadowBlur) — canvas shadow blur is expensive and this loop can run
+        // 10-20x per frame, so flat fills keep the animation smooth.
         if (f.type === "dot") {
-          ctx.shadowBlur = 10 + 8 * ignite;
           ctx.fillStyle = rgba(col, 0.55 * tw + 0.2);
           ctx.beginPath();
           ctx.arc(0, 0, s * 0.6, 0, TAU);
           ctx.fill();
         } else if (f.type === "ring") {
-          ctx.shadowBlur = 8;
           ctx.lineWidth = Math.max(1, s * 0.16);
           ctx.strokeStyle = rgba(col, 0.6 * tw + 0.15);
           ctx.beginPath();
           ctx.arc(0, 0, s * 0.75, 0, TAU);
           ctx.stroke();
         } else if (f.type === "pill") {
-          ctx.shadowBlur = 9;
           ctx.fillStyle = rgba(col, 0.5 * tw + 0.15);
           roundedRect(ctx, -s * f.wf, -s * 0.42, s * f.wf * 2, s * 0.84, s * 0.42);
           ctx.fill();
         } else if (f.type === "chip") {
-          ctx.shadowBlur = 9;
           ctx.fillStyle = rgba(col, 0.55 * tw + 0.18);
           roundedRect(ctx, -s * 0.9, -s * 0.6, s * 1.8, s * 1.2, s * 0.32);
           ctx.fill();
         } else if (f.type === "line") {
-          ctx.shadowBlur = 6;
           ctx.fillStyle = rgba(col, 0.5 * tw + 0.12);
           roundedRect(ctx, -s * f.wf, -s * 0.14, s * f.wf * 2, s * 0.28, s * 0.14);
           ctx.fill();
@@ -202,12 +216,9 @@ export function OrbitCanvas({ className }) {
           ctx.globalCompositeOperation = "source-over";
           const cw = s * 2.4;
           const ch = s * 1.7;
-          ctx.shadowBlur = 18;
-          ctx.shadowColor = "rgba(2,4,3,0.7)";
           ctx.fillStyle = "rgba(22,27,34,0.92)";
           roundedRect(ctx, -cw / 2, -ch / 2, cw, ch, s * 0.28);
           ctx.fill();
-          ctx.shadowBlur = 0;
           ctx.fillStyle = rgba(ACC, 0.5 * tw + 0.28);
           roundedRect(ctx, -cw / 2 + s * 0.28, -ch / 2 + s * 0.3, cw * 0.42, s * 0.32, s * 0.16);
           ctx.fill();
@@ -219,7 +230,6 @@ export function OrbitCanvas({ className }) {
         }
         ctx.restore();
       }
-      ctx.shadowBlur = 0;
       ctx.globalCompositeOperation = "lighter";
 
       const cr = R * (0.24 + 0.16 * ignite);
@@ -243,20 +253,33 @@ export function OrbitCanvas({ className }) {
       ctx.fill();
 
       ctx.globalCompositeOperation = "source-over";
-      ctx.shadowBlur = 0;
     };
 
     resize();
     const ro = new ResizeObserver(resize);
     ro.observe(canvas);
 
+    // pause the animation loop entirely while the hero is scrolled off-screen
+    let isVisible = true;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+      },
+      { threshold: 0 },
+    );
+    io.observe(canvas);
+
     let raf;
     const t0 = performance.now();
     if (reduceMotion) {
       draw(0);
     } else {
+      let lastDraw = 0;
       const loop = (now) => {
-        draw((now - t0) / 1000);
+        if (isVisible && now - lastDraw >= targetFrameMs) {
+          draw((now - t0) / 1000);
+          lastDraw = now;
+        }
         raf = requestAnimationFrame(loop);
       };
       raf = requestAnimationFrame(loop);
@@ -265,6 +288,7 @@ export function OrbitCanvas({ className }) {
     return () => {
       if (raf) cancelAnimationFrame(raf);
       ro.disconnect();
+      io.disconnect();
     };
   }, []);
 

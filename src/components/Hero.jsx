@@ -4,7 +4,7 @@ import { OrbitCanvas } from "./OrbitCanvas";
 
 export function Hero() {
   return (
-    <section className="relative min-h-[870px] flex flex-col justify-center items-center text-center overflow-hidden">
+    <section className="relative min-h-[max(560px,calc(100svh_-_96px))] flex flex-col justify-center items-center text-center overflow-hidden px-5 md:px-20">
       <OrbitCanvas className="absolute inset-0 h-full w-full" />
       <div
         aria-hidden="true"
@@ -15,7 +15,7 @@ export function Hero() {
         }}
       />
 
-      <div className="relative z-10 px-5 md:px-20 max-w-3xl mx-auto space-y-6">
+      <div className="relative z-10 max-w-3xl mx-auto space-y-6">
         <h1 className="font-sans text-4xl md:text-[64px] font-bold leading-tight tracking-tighter text-on-surface">
           [Gurjar Siddhant Begraj]
         </h1>
