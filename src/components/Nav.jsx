@@ -32,7 +32,9 @@ export function Nav() {
             </a>
           ))}
           <Button asChild variant="primary" className="px-4 py-2">
-            <a href="#">Resume</a>
+            <a href="/siddhant-gurjar-resume.pdf" target="_blank" rel="noopener noreferrer">
+              Resume
+            </a>
           </Button>
         </div>
 
@@ -65,7 +67,12 @@ export function Nav() {
               </a>
             ))}
             <Button asChild variant="primary" className="mt-2 justify-center">
-              <a href="#" onClick={() => setOpen(false)}>
+              <a
+                href="/siddhant-gurjar-resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setOpen(false)}
+              >
                 Resume
               </a>
             </Button>

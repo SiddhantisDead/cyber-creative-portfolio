@@ -20,7 +20,13 @@ export function Hero() {
             <a href="#projects">View Projects</a>
           </Button>
           <Button asChild variant="secondary">
-            <a href="#contact">Resume / Contact</a>
+            <a
+              href="/siddhant-gurjar-resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Resume
+            </a>
           </Button>
         </div>
       </div>

@@ -2,7 +2,7 @@ const LINKS = [
   { label: "GitHub", href: "https://github.com/SiddhantisDead" },
   { label: "LinkedIn", href: "#" },
   { label: "Email", href: "#" },
-  { label: "Resume", href: "#" },
+  { label: "Resume", href: "/siddhant-gurjar-resume.pdf" },
 ];
 
 export function Footer() {
@@ -16,17 +16,20 @@ export function Footer() {
           © 2024 ACTIVE_DEFENSE. ALL RIGHTS RESERVED.
         </div>
         <div className="flex gap-6 font-mono text-sm">
-          {LINKS.map(({ label, href }) => (
-            <a
-              key={label}
-              href={href}
-              target={href.startsWith("http") ? "_blank" : undefined}
-              rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
-              className="text-on-surface-variant hover:text-primary opacity-80 hover:opacity-100 transition-colors transition-opacity"
-            >
-              {label}
-            </a>
-          ))}
+          {LINKS.map(({ label, href }) => {
+            const external = href.startsWith("http") || href.endsWith(".pdf");
+            return (
+              <a
+                key={label}
+                href={href}
+                target={external ? "_blank" : undefined}
+                rel={external ? "noopener noreferrer" : undefined}
+                className="text-on-surface-variant hover:text-primary opacity-80 hover:opacity-100 transition-colors transition-opacity"
+              >
+                {label}
+              </a>
+            );
+          })}
         </div>
       </div>
     </footer>
