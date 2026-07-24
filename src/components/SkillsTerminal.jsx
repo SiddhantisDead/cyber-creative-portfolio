@@ -31,7 +31,7 @@ export function SkillsTerminal() {
           </span>
         </div>
 
-        <div className="p-6 md:p-8 font-mono text-sm leading-relaxed overflow-x-auto whitespace-pre text-on-surface-variant">
+        <div className="p-6 md:p-8 font-mono text-xs sm:text-sm leading-relaxed whitespace-pre-wrap break-words text-on-surface-variant">
           <div>
             <Prompt />
             {"cat skills.json"}
