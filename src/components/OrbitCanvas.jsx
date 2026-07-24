@@ -255,8 +255,18 @@ export function OrbitCanvas({ className }) {
       ctx.globalCompositeOperation = "source-over";
     };
 
-    resize();
-    const ro = new ResizeObserver(resize);
+    // Setting canvas.width/height (inside resize()) clears the bitmap, even
+    // to the same value. ResizeObserver fires an initial "baseline" callback
+    // shortly after observe() starts even with no real size change, which
+    // would silently wipe the single static draw() below in the
+    // reduced-motion path (the animated rAF loop redraws every frame so it
+    // never notices) — so redraw after every resize when motion is reduced.
+    const handleResize = () => {
+      resize();
+      if (reduceMotion) draw(0);
+    };
+    handleResize();
+    const ro = new ResizeObserver(handleResize);
     ro.observe(canvas);
 
     // pause the animation loop entirely while the hero is scrolled off-screen
@@ -271,9 +281,7 @@ export function OrbitCanvas({ className }) {
 
     let raf;
     const t0 = performance.now();
-    if (reduceMotion) {
-      draw(0);
-    } else {
+    if (!reduceMotion) {
       let lastDraw = 0;
       const loop = (now) => {
         if (isVisible && now - lastDraw >= targetFrameMs) {
