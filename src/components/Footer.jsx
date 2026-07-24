@@ -1,6 +1,9 @@
 const LINKS = [
   { label: "GitHub", href: "https://github.com/SiddhantisDead" },
-  { label: "LinkedIn", href: "#" },
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/in/gurjar-siddhant-begraj-600023294/",
+  },
   { label: "Email", href: "#" },
   { label: "Resume", href: "/siddhant-gurjar-resume.pdf" },
 ];
