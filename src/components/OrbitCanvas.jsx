@@ -84,9 +84,6 @@ export function OrbitCanvas({ className }) {
     if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
 
     // scale back detail/resolution on small screens or weaker devices
     const lite =
@@ -255,18 +252,8 @@ export function OrbitCanvas({ className }) {
       ctx.globalCompositeOperation = "source-over";
     };
 
-    // Setting canvas.width/height (inside resize()) clears the bitmap, even
-    // to the same value. ResizeObserver fires an initial "baseline" callback
-    // shortly after observe() starts even with no real size change, which
-    // would silently wipe the single static draw() below in the
-    // reduced-motion path (the animated rAF loop redraws every frame so it
-    // never notices) — so redraw after every resize when motion is reduced.
-    const handleResize = () => {
-      resize();
-      if (reduceMotion) draw(0);
-    };
-    handleResize();
-    const ro = new ResizeObserver(handleResize);
+    resize();
+    const ro = new ResizeObserver(resize);
     ro.observe(canvas);
 
     // pause the animation loop entirely while the hero is scrolled off-screen
@@ -279,19 +266,21 @@ export function OrbitCanvas({ className }) {
     );
     io.observe(canvas);
 
+    // Runs regardless of prefers-reduced-motion by design: this is a
+    // decorative background animation, not UI motion that could disorient,
+    // and it's kept cheap (throttled fps, lite mode, paused off-screen) so
+    // it doesn't cost anything for users who'd rather not have motion.
     let raf;
     const t0 = performance.now();
-    if (!reduceMotion) {
-      let lastDraw = 0;
-      const loop = (now) => {
-        if (isVisible && now - lastDraw >= targetFrameMs) {
-          draw((now - t0) / 1000);
-          lastDraw = now;
-        }
-        raf = requestAnimationFrame(loop);
-      };
+    let lastDraw = 0;
+    const loop = (now) => {
+      if (isVisible && now - lastDraw >= targetFrameMs) {
+        draw((now - t0) / 1000);
+        lastDraw = now;
+      }
       raf = requestAnimationFrame(loop);
-    }
+    };
+    raf = requestAnimationFrame(loop);
 
     return () => {
       if (raf) cancelAnimationFrame(raf);
