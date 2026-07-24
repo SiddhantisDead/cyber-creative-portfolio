@@ -4,7 +4,10 @@ const LINKS = [
     label: "LinkedIn",
     href: "https://www.linkedin.com/in/gurjar-siddhant-begraj-600023294/",
   },
-  { label: "Email", href: "#" },
+  {
+    label: "Email",
+    href: "mailto:gurjar.23scse1530007@galgotiasuniversity.ac.in",
+  },
   { label: "Resume", href: "/siddhant-gurjar-resume.pdf" },
 ];
 
