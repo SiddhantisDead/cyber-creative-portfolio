@@ -8,16 +8,25 @@ const ICONS = {
 };
 
 export const ProjectCard = React.forwardRef(
-  ({ title, description, tags, image, imageAlt, icon, className, ...props }, ref) => {
+  (
+    { title, description, tags, image, imageAlt, icon, href, className, ...props },
+    ref,
+  ) => {
     const Icon = ICONS[icon] ?? ExternalLink;
+    const Comp = href ? "a" : "div";
+    const linkProps = href
+      ? { href, target: "_blank", rel: "noopener noreferrer" }
+      : {};
 
     return (
-      <div
+      <Comp
         ref={ref}
         className={cn(
           "group border border-primary/15 bg-surface overflow-hidden hover:border-primary/50 transition-all duration-300",
+          href && "block cursor-pointer",
           className,
         )}
+        {...linkProps}
         {...props}
       >
         <div className="h-48 relative overflow-hidden">
@@ -48,7 +57,7 @@ export const ProjectCard = React.forwardRef(
             ))}
           </div>
         </div>
-      </div>
+      </Comp>
     );
   },
 );

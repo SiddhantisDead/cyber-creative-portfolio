@@ -4,6 +4,7 @@ export const projects = [
     description:
       "AI-powered resume screening tool leveraging Claude API for intelligent parsing and matching.",
     tags: ["React", "TypeScript", "Supabase"],
+    href: "https://raven-resume-smoky.vercel.app/",
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuDGMfEep2lBqvuJVJH8eBvPidNVF1PDC6Y3EWlVWq5_cLVTUa7AwqJn_6i5sH12QFEkfkLqEv7thEJ-XkRmv0oF-e7MKkixUHSScYWUAQJp4ZwNuNueizHt9HoEjm0aJU5t_i_4Yi3C793ZlJ1XJlgwvaID2jOy95y4yhPpXal2k6J1C4SWkBdAKtm5OVv4Bow7zPAMTf42Ei0nxn9LeseT0CAC7Mh155cIo-0lGz3efX6SvHoP3A3Jse_OUcG3_9Bc3RmZ7ONvboE",
     imageAlt:
