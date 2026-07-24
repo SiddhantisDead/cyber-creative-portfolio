@@ -16,6 +16,7 @@ export const projects = [
     description:
       "Offensive security training lab environment designed for practicing reverse engineering and exploitation techniques.",
     tags: ["C++", "Ghidra", "Linux"],
+    href: "/breachlab-certificate.pdf",
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuBhyRUGsPi_RfqxmK9xhoVMJsBVYwEMPI_h8bvIIyrv_GQQ5p0Iru4rauzSXeHEx_2jnPkpy7qMgXGVebMMiw2qeBmA6iZbJsDq2ceg3Ax5drd5YMSQmYKvwmT2moJXUYkiUO6A_QNXiCT-zVqCfghvTZUCwYJkBN8gOQ-y04WleixLGAcLiOefVKCrHqhpvI2DMQmz-6i3EoWRkth_SCyCFJLdC57k0Ootio20SCtlykhRm_2ZlgQ87xgefvEiX7GgTO19SHX-Qwc",
     imageAlt:
