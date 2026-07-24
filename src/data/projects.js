@@ -28,6 +28,7 @@ export const projects = [
     description:
       "A compilation of advanced motion design sequences, 3D modeling, and procedural animation explorations.",
     tags: ["After Effects", "Blender", "Cinema 4D"],
+    href: "https://dribbble.com/siddhant-gurjar",
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuCP39Ja4Rh8LxtgucUsmJgdw0fUpC2d_JW16lS8-vlwL8BCdg4XkvbKQ6dCPaMpgpovrBwuI5Vcm--JQTGb-oyzao68eMh4lsg8LCVIIrHClvwzlKXeGd9MabIoGEQOFahLxYt7tcua7_0jdGAvLmHksSPMAxUN6Us6tPXfDXqnAJakDZ8Ye6b01b2IEP7DI667vyzWccpueBR8dD4mcEyIcypNHaBSI7LdtP0x6LLzLsC5eswrouEHrxgXfEM3er9JlXHM4_6Axuo",
     imageAlt:
