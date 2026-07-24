@@ -3,6 +3,7 @@ import { Hero } from "./components/Hero";
 import { IdentitySplit } from "./components/IdentitySplit";
 import { Projects } from "./components/Projects";
 import { SkillsTerminal } from "./components/SkillsTerminal";
+import { Contact } from "./components/Contact";
 import { Footer } from "./components/Footer";
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
         <IdentitySplit />
         <Projects />
         <SkillsTerminal />
+        <Contact />
       </main>
       <Footer />
     </div>
