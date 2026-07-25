@@ -22,7 +22,9 @@ const HELP_ROWS = [
   ["skills", "cat skills.json"],
   ["projects", "list featured projects"],
   ["contact", "how to reach me"],
-  ["resume", "open resume.pdf"],
+  ["resume", "list resume versions"],
+  ["resume security", "open security resume.pdf"],
+  ["resume fullstack", "open full-stack resume.pdf"],
   ["whoami", "current session identity"],
   ["clear", "clear the terminal"],
 ];
@@ -173,7 +175,8 @@ function LsBlock() {
       <span>skills.json</span>
       <span>projects.md</span>
       <span>contact.sh</span>
-      <span>resume.pdf</span>
+      <span>resume-security.pdf</span>
+      <span>resume-fullstack.pdf</span>
     </div>
   );
 }
@@ -211,13 +214,44 @@ function runCommand(raw) {
       return { output: <LsBlock /> };
     case "contact":
       return { output: <ContactBlock /> };
-    case "resume":
-      window.open(
-        "/siddhant-gurjar-resume.pdf",
-        "_blank",
-        "noopener,noreferrer",
-      );
-      return { output: <div>Opening resume.pdf in a new tab…</div> };
+    case "resume": {
+      const target = (args[0] ?? "").toLowerCase();
+      if (target === "security" || target === "sec") {
+        window.open(
+          "/siddhant-gurjar-resume-security.pdf",
+          "_blank",
+          "noopener,noreferrer",
+        );
+        return {
+          output: <div>Opening resume-security.pdf in a new tab…</div>,
+        };
+      }
+      if (target === "fullstack" || target === "full-stack" || target === "fs") {
+        window.open(
+          "/siddhant-gurjar-resume-fullstack.pdf",
+          "_blank",
+          "noopener,noreferrer",
+        );
+        return {
+          output: <div>Opening resume-fullstack.pdf in a new tab…</div>,
+        };
+      }
+      return {
+        output: (
+          <div>
+            <div>Two resumes available:</div>
+            <div className="grid grid-cols-[84px_1fr] gap-x-3">
+              <Key>security</Key>
+              <span>resume security</span>
+            </div>
+            <div className="grid grid-cols-[84px_1fr] gap-x-3">
+              <Key>fullstack</Key>
+              <span>resume fullstack</span>
+            </div>
+          </div>
+        ),
+      };
+    }
     case "date":
       return { output: <div>{new Date().toString()}</div> };
     case "echo":

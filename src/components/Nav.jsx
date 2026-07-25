@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import { Button } from "./Button";
+import { ResumeMenu } from "./ResumeMenu";
 
 const LINKS = [
   { href: "#projects", label: "Projects" },
@@ -31,11 +31,7 @@ export function Nav() {
               {link.label}
             </a>
           ))}
-          <Button asChild variant="primary" className="px-4 py-2">
-            <a href="/siddhant-gurjar-resume.pdf" target="_blank" rel="noopener noreferrer">
-              Resume
-            </a>
-          </Button>
+          <ResumeMenu variant="primary" />
         </div>
 
         <button
@@ -66,16 +62,11 @@ export function Nav() {
                 {link.label}
               </a>
             ))}
-            <Button asChild variant="primary" className="mt-2 justify-center">
-              <a
-                href="/siddhant-gurjar-resume.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setOpen(false)}
-              >
-                Resume
-              </a>
-            </Button>
+            <ResumeMenu
+              variant="primary"
+              className="mt-2 w-full"
+              onSelect={() => setOpen(false)}
+            />
           </div>
         </div>
       )}

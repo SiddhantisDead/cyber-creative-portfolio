@@ -1,3 +1,5 @@
+import { ResumeMenu } from "./ResumeMenu";
+
 const LINKS = [
   { label: "GitHub", href: "https://github.com/SiddhantisDead" },
   {
@@ -8,7 +10,6 @@ const LINKS = [
     label: "Email",
     href: "mailto:gurjar.23scse1530007@galgotiasuniversity.ac.in",
   },
-  { label: "Resume", href: "/siddhant-gurjar-resume.pdf" },
 ];
 
 export function Footer() {
@@ -18,7 +19,7 @@ export function Footer() {
         <div className="font-mono text-xs uppercase tracking-widest text-on-surface">
           © 2024 ACTIVE_DEFENSE. ALL RIGHTS RESERVED.
         </div>
-        <div className="flex gap-6 font-mono text-sm">
+        <div className="flex gap-6 items-center font-mono text-sm">
           {LINKS.map(({ label, href }) => {
             const external = href.startsWith("http") || href.endsWith(".pdf");
             return (
@@ -33,6 +34,10 @@ export function Footer() {
               </a>
             );
           })}
+          <ResumeMenu
+            variant="ghost"
+            triggerClassName="p-0 normal-case tracking-normal font-mono text-sm text-on-surface-variant hover:text-primary hover:bg-transparent opacity-80 hover:opacity-100"
+          />
         </div>
       </div>
     </footer>

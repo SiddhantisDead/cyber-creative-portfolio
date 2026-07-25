@@ -1,6 +1,7 @@
 import { ChevronDown } from "lucide-react";
 import { Button } from "./Button";
 import { OrbitCanvas } from "./OrbitCanvas";
+import { ResumeMenu } from "./ResumeMenu";
 
 export function Hero() {
   return (
@@ -31,15 +32,7 @@ export function Hero() {
           <Button asChild variant="primary">
             <a href="#projects">View Projects</a>
           </Button>
-          <Button asChild variant="secondary">
-            <a
-              href="/siddhant-gurjar-resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Resume
-            </a>
-          </Button>
+          <ResumeMenu variant="secondary" />
         </div>
       </div>
 

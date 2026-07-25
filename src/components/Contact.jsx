@@ -1,4 +1,7 @@
+import { useEffect, useRef, useState } from "react";
 import { Mail, Link, SquareCode, Download } from "lucide-react";
+import { RESUMES } from "../data/resumes";
+import { cn } from "../lib/utils";
 
 const CHANNELS = [
   {
@@ -19,13 +22,67 @@ const CHANNELS = [
     value: "@SiddhantisDead",
     href: "https://github.com/SiddhantisDead",
   },
-  {
-    icon: Download,
-    label: "Resume",
-    value: "Download PDF",
-    href: "/siddhant-gurjar-resume.pdf",
-  },
 ];
+
+function ResumeCard() {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (e) => {
+      if (!rootRef.current?.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, [open]);
+
+  return (
+    <div ref={rootRef} className="relative">
+      <button
+        type="button"
+        aria-haspopup="true"
+        aria-expanded={open}
+        onClick={() => setOpen((o) => !o)}
+        className={cn(
+          "group flex flex-col gap-4 bg-surface border border-primary/15 p-6 hover:border-primary/50 transition-colors duration-300 w-full text-left",
+          open && "border-primary/50",
+        )}
+      >
+        <Download aria-hidden="true" className="text-primary size-6" />
+        <div>
+          <div className="font-mono text-xs uppercase tracking-widest text-on-surface-variant mb-1">
+            Resume
+          </div>
+          <div className="text-on-surface text-sm break-words group-hover:text-primary transition-colors">
+            Choose a version
+          </div>
+        </div>
+      </button>
+
+      {open && (
+        <div
+          role="menu"
+          className="absolute left-0 right-0 z-20 mt-2 border border-primary/20 bg-surface shadow-2xl"
+        >
+          {RESUMES.map((resume) => (
+            <a
+              key={resume.href}
+              role="menuitem"
+              href={resume.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setOpen(false)}
+              className="block px-4 py-3 font-mono text-xs uppercase tracking-widest text-on-surface-variant hover:bg-primary/10 hover:text-primary transition-colors"
+            >
+              {resume.label}
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export function Contact() {
   return (
@@ -67,6 +124,7 @@ export function Contact() {
             </a>
           );
         })}
+        <ResumeCard />
       </div>
     </section>
   );
